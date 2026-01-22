@@ -1,0 +1,49 @@
+version: 1
+
+providers:
+  - openai:gpt-4.1-mini
+
+prompts:
+  - file://prompts/validate.txt
+
+tests:
+  - vars:
+      input_json: |
+        {
+          "name": "",
+          "email": "user@gmail",
+          "age": 16,
+          "country": "India",
+          "phone": "99999"
+        }
+    assert:
+      - type: json-schema
+        schema:
+          type: object
+          required: [is_valid, errors, warnings]
+      - type: equals
+        value:
+          is_valid: false
+          errors:
+            - name is required
+            - email is not a valid email address
+            - country must be a valid ISO-2 country code
+            - phone number is not in E.164 format
+          warnings:
+            - age is below recommended minimum
+
+  - vars:
+      input_json: |
+        {
+          "name": "Aarav Patel",
+          "email": "aarav.patel@gmail.com",
+          "age": 24,
+          "country": "IN",
+          "phone": "+919876543210"
+        }
+    assert:
+      - type: equals
+        value:
+          is_valid: true
+          errors: []
+          warnings: []
