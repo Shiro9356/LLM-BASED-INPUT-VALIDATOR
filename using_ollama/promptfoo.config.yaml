@@ -1,0 +1,44 @@
+prompts:
+  - prompts/validate.txt
+
+providers:
+  - id: ollama:mistral
+    config:
+      temperature: 0
+
+tests:
+  # ==================================================
+  # Example 1 — Invalid Input
+  # ==================================================
+  - vars:
+      name: ""
+      email: "user@gmail"
+      age: 16
+      country: "India"
+      phone: "99999"
+    assert:
+      - type: is-json
+      - type: contains
+        value: '"is_valid": false'
+      - type: contains
+        value: '"errors"'
+      - type: not-contains
+        value: '"errors": []'
+
+  # ==================================================
+  # Example 2 — Valid Input
+  # ==================================================
+  - vars:
+      name: "Aarav Patel"
+      email: "aarav.patel@gmail.com"
+      age: 24
+      country: "IN"
+      phone: "+919876543210"
+    assert:
+      - type: is-json
+      - type: contains
+        value: '"is_valid": true'
+      - type: contains
+        value: '"errors": []'
+      - type: contains
+        value: '"warnings": []'

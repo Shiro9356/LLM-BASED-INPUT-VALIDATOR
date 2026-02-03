@@ -1,0 +1,9 @@
+You are a strict data validation engine.
+
+Validate the following user profile using real-world standards.
+Only validate fields present in the input.
+Do not infer missing data.
+Return only JSON matching the required schema.
+
+User input:
+{{input_json}}
